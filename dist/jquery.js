@@ -9,7 +9,7 @@
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2021-03-02T17:08Z
+ * Date: 2021-04-22T10:48Z
  */
 ( function( global, factory ) {
 
@@ -10032,9 +10032,10 @@ jQuery.ajaxTransport( function( options ) {
 				callback = function( type ) {
 					return function() {
 						if ( callback ) {
-							callback = errorCallback = xhr.onload =
-								xhr.onerror = xhr.onabort = xhr.ontimeout =
-									xhr.onreadystatechange = null;
+							callback = errorCallback = null;
+							xhr.onload = xhr.onerror = xhr.onabort =
+								xhr.ontimeout = xhr.onreadystatechange =
+								function() { };
 
 							if ( type === "abort" ) {
 								xhr.abort();

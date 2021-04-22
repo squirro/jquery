@@ -74,9 +74,10 @@ jQuery.ajaxTransport( function( options ) {
 				callback = function( type ) {
 					return function() {
 						if ( callback ) {
-							callback = errorCallback = xhr.onload =
-								xhr.onerror = xhr.onabort = xhr.ontimeout =
-									xhr.onreadystatechange = null;
+							callback = errorCallback = null;
+							xhr.onload = xhr.onerror = xhr.onabort =
+								xhr.ontimeout = xhr.onreadystatechange =
+								function() { };
 
 							if ( type === "abort" ) {
 								xhr.abort();
