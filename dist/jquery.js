@@ -9,7 +9,7 @@
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2021-04-22T10:48Z
+ * Date: 2022-03-03T09:19Z
  */
 ( function( global, factory ) {
 
@@ -5452,6 +5452,30 @@ jQuery.event = {
 			handlerQueue = [],
 			delegateCount = handlers.delegateCount,
 			cur = event.target;
+
+		if ( !cur ) {
+
+			// Support: Salesforce
+			// When loaded in salesforce, events with targets outside the shadow box of the current
+			// lightning component (which contains our squirro app) have event.target set to undefined.
+			// This would result in an error below, since event.target cannot be empty based on the
+			// specification.
+			//
+			// This happens for handlers like these (taken from materialize/chips.js):
+			//   $(document).on('click', '.chip .close', function(e){
+			//     var $chips = $(this).closest('.chips');
+			//     if ($chips.attr('data-initialized')) {
+			//       return;
+			//     }
+			//     $(this).closest('.chip').remove();
+			//   });
+			//
+			// To work around this issue, we will ignore the event in this case. This should be safe,
+			// since if the target is outside our shadow box, it would not trigger any of our event
+			// handlers anyway. And for targets inside our shadow box, event.target will be set,
+			// so everything will work as expected.
+			return [];
+		}
 
 		// Find delegate handlers
 		if ( delegateCount &&
